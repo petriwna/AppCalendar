@@ -21,11 +21,18 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              "src/favicon.ico",
+              "src/calendar.png",
               "src/assets"
             ],
+            "inlineStyleLanguage": "scss",
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/styles"
+              ]
+            },
             "styles": [
-              "src/styles.css"
+              "@angular/material/prebuilt-themes/deeppurple-amber.css",
+              "src/styles.scss"
             ],
             "scripts": []
           },
@@ -80,11 +87,13 @@
             ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
-              "src/favicon.ico",
+              "src/calendar.png",
               "src/assets"
             ],
+            "inlineStyleLanguage": "scss",
             "styles": [
-              "src/styles.css"
+              "@angular/material/prebuilt-themes/deeppurple-amber.scss",
+              "src/styles.scss"
             ],
             "scripts": []
           }

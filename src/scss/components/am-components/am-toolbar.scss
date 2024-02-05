@@ -1,0 +1,8 @@
+mat-toolbar{
+  &.mat-toolbar{
+    background-color: transparent;
+    padding: 8px;
+    border-bottom: 0.5px solid rgba(176, 176, 176, 0.3686);
+    align-items: center;
+  }
+}
