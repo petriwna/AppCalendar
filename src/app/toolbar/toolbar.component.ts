@@ -1,13 +1,12 @@
-import { NgOptimizedImage } from "@angular/common";
 import { Component } from "@angular/core";
-import { MatButtonModule } from "@angular/material/button";
-import { MatIconModule } from "@angular/material/icon";
 import { MatToolbarModule } from "@angular/material/toolbar";
+
+import { LeftContainerToolbarComponent } from "../left-container-toolbar/left-container-toolbar.component";
 
 @Component({
     selector: "app-toolbar",
     standalone: true,
-    imports: [MatToolbarModule, MatButtonModule, MatIconModule, NgOptimizedImage],
+    imports: [MatToolbarModule, LeftContainerToolbarComponent],
     templateUrl: "./toolbar.component.html",
     styleUrl: "./toolbar.component.scss"
 })
