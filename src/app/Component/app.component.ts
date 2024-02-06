@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 
-import { ToolbarComponent } from "./toolbar/toolbar.component";
+import { ToolbarComponent } from "./ToolbarComponent/toolbar/toolbar.component";
 
 @Component({
     selector: "app-root",
