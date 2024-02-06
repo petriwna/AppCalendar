@@ -12,4 +12,5 @@ import { LeftContainerToolbarComponent } from "../left-container-toolbar/left-co
     styleUrl: "./toolbar.component.scss"
 })
 export class ToolbarComponent {
+
 }
