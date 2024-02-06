@@ -1,0 +1,10 @@
+.toolbar {
+  &__left-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 238px;
+    padding-right: 30px;
+    flex: 1 0 auto;
+  }
+}
