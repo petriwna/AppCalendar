@@ -1,0 +1,31 @@
+.mat-mdc-select-trigger {
+  padding: 14px;
+  gap: 10px;
+}
+
+#cdk-overlay-0{
+  width:250px !important;
+  right: -56px !important;
+  top: 54px !important;
+}
+
+.mat-mdc-option .mat-pseudo-checkbox-minimal {
+  display: none;
+}
+
+.mdc-list-item__primary-text {
+  width: 100%;
+  font-family: Roboto,Arial,sans-serif !important;
+  line-height: 1.5rem !important;
+  font-size: 14px !important;
+  letter-spacing: .00625em !important;
+  font-weight: 400 !important;
+}
+
+.mdc-list-item--selected{
+  color: red;
+}
+
+div.mat-mdc-select-panel {
+  max-height: 607px !important;
+}

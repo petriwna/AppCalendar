@@ -1,0 +1,24 @@
+.select-toolbar {
+
+  &__button {
+    padding: 0;
+  }
+
+  &__select {
+    font-family: "Google Sans",Roboto,Arial,sans-serif;
+    font-size: .875rem;
+    letter-spacing: .0107142857em;
+    font-weight: 500;
+  }
+
+  &__option {
+
+  }
+
+  &__option  span::after {
+    content: attr(data-extra-text);
+    color: rgb(95,99,104);
+    position: absolute;
+    right: 16px;
+  }
+}

@@ -4,9 +4,10 @@
     [matDatepicker]="picker"
     (dateChange)="onDateSelected($event)"
   />
-  <button mat-button (click)="picker.open()">
-    {{month}} {{year}}  <mat-icon matDatepickerToggleIcon>arrow_drop_down</mat-icon>
+  <button mat-button class="datepicker__button" (click)="picker.open()">
+    {{month}} {{year}}
 
+    <mat-icon matDatepickerToggleIcon class="datepicker__icon">arrow_drop_down</mat-icon>
   </button>
   <mat-datepicker #picker></mat-datepicker>
 </div>

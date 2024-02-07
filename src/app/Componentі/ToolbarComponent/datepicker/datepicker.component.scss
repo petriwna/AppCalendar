@@ -7,4 +7,9 @@
     padding: 0;
     border: none;
   }
+
+  &__button {
+    flex-direction: row-reverse;
+    gap: 4px;
+  }
 }
