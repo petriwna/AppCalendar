@@ -3,6 +3,7 @@ import { MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 
 import { SelectToolbarComponent } from "../select-toolbar/select-toolbar.component";
+import { SwitchComponent } from "../switch/switch.component";
 
 @Component({
     selector: "app-right-container-toolbar",
@@ -10,7 +11,8 @@ import { SelectToolbarComponent } from "../select-toolbar/select-toolbar.compone
     imports: [
         MatIconButton,
         MatIcon,
-        SelectToolbarComponent
+        SelectToolbarComponent,
+        SwitchComponent
     ],
     templateUrl: "./right-container-toolbar.component.html",
     styleUrl: "./right-container-toolbar.component.scss"

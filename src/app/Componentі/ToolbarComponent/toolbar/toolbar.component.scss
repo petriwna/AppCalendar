@@ -1,11 +1,17 @@
 .toolbar {
   display: flex;
   gap: 8px;
+  justify-content: space-between;
+  padding: 8px 30px;
+
+  &__group{
+    display: flex;
+    gap: 50px;
+  }
 
   &__left-container {
     display: flex;
     align-items: center;
-    padding-right: 30px;
     gap: 8px;
   }
 

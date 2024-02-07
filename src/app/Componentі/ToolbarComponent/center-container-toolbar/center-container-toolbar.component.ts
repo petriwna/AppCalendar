@@ -17,5 +17,33 @@ import { DatepickerComponent } from "../datepicker/datepicker.component";
     styleUrl: "./center-container-toolbar.component.css"
 })
 export class CenterContainerToolbarComponent {
+    date: Date = new Date(Date.now());
+    months: string[] = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+    ];
+    daysOfWeek: string[] = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+    ];
 
+    month: string = this.months[this.date.getMonth()];
+    dayWeek: string = this.daysOfWeek[this.date.getDay()];
+    dateMonth: number = this.date.getDate();
+    today: string = `${this.dayWeek}, ${this.dateMonth} ${this.month}`;
 }
