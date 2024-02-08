@@ -1,13 +1,15 @@
 import { Component } from "@angular/core";
 import { MatCard } from "@angular/material/card";
 import { MatCalendar } from "@angular/material/datepicker";
+import { MatMomentDateModule } from "@angular/material-moment-adapter";
 
 @Component({
     selector: "app-sidenav",
     standalone: true,
     imports: [
         MatCard,
-        MatCalendar
+        MatCalendar,
+        MatMomentDateModule
     ],
     templateUrl: "./sidenav.component.html",
     styleUrl: "./sidenav.component.scss"
