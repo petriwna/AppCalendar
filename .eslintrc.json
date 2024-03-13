@@ -22,6 +22,7 @@
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
+        "class-methods-use-this": "off",
         "import/no-extraneous-dependencies": "off",
         "import/prefer-default-export": "off",
         "import/first": "error",
@@ -29,7 +30,7 @@
         "import/no-duplicates": "error",
         "max-len": [
           "error",
-          120
+          150
         ],
         "simple-import-sort/imports": "error",
         "simple-import-sort/exports": "error",
@@ -39,7 +40,9 @@
           "warn",
           { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
         ],
-
+        "no-underscore-dangle": [
+          "off"
+        ],
         "@typescript-eslint/indent": [
           "error",
           4

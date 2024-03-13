@@ -1,0 +1,18 @@
+.main {
+  &__container {
+    background-color: #1C74E8;
+    width: 100%;
+
+  }
+
+  &__content {
+    min-height: 90.8vh;
+  }
+
+  &__drawer {
+    padding: 20px;
+    width: 256px;
+  }
+}
+
+
