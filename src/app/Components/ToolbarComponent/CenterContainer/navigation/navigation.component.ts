@@ -18,60 +18,58 @@ import { SelectionService } from "../../../../Services/selection.service";
 })
 export class NavigationComponent implements OnInit {
     selectedValue: string;
+    currentDate: string;
 
     constructor(
         private dateService: DateService,
         private localStorageService: LocalStorageService,
         private selectionService: SelectionService
-    ) { }
+    ) {
+    }
 
     ngOnInit(): void {
-        this.initializeSelectedValue();
-        this.subscribeToSelectionChanges();
-    }
-
-    private initializeSelectedValue(): void {
-        this.selectedValue = this.localStorageService.getStoredValue("selectedValue") || "day";
-        if (this.selectedValue === "schedule") {
-            this.selectedValue = "day";
-        }
-    }
-
-    private subscribeToSelectionChanges(): void {
-        this.selectionService.selectionChange.subscribe((value: string) => {
-            if (value === "schedule" || this.selectedValue === "schedule") {
-                this.selectedValue = "day";
-            } else {
-                this.selectedValue = value;
-            }
+        this.dateService.currentDate$.subscribe((value: string) => {
+            this.currentDate = value;
+        });
+        this.selectionService.selectedValue$.subscribe((value: string) => {
+            this.selectedValue = value;
         });
     }
 
-    handleNextButton() {
+    handleNextButton(): void {
+        let value: string;
 
+        switch (this.selectedValue) {
+            case "month":
+            case "week":
+            case "period":
+                this.currentDate = this.dateService.setCurrentMonthToday();
+                break;
+            case "year":
+                value = this.dateService.nextYear(this.currentDate);
+                this.currentDate = value;
+                break;
+            default:
+                break;
+        }
     }
 
-    handlePrevButton() {
+    handlePrevButton(): void {
+        let value: string;
 
-    }
-
-    prevMonth(): void {
-    // this.date.setMonth(this.date.getMonth() - 1);
-    // this.updateDate();
-    }
-
-    nextMonth(): void {
-    // this.date.setMonth(this.date.getMonth() + 1);
-    // this.updateDate();
-    }
-
-    prevDay(): void {
-    // this.date.setDate(this.date.getDate() - 1);
-    // this.updateDate();
-    }
-
-    nextDay(): void {
-    // this.date.setDate(this.date.getDate() + 1);
-    // this.updateDate();
+        switch (this.selectedValue) {
+            case "month":
+            case "week":
+            case "period":
+                this.currentDate = this.dateService.setCurrentMonthToday();
+                break;
+            case "year":
+                value = this.dateService.prevYear(this.currentDate);
+                this.currentDate = value;
+                break;
+            default:
+                this.currentDate = this.dateService.setCurrentDateToday();
+                break;
+        }
     }
 }

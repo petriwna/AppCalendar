@@ -25,7 +25,7 @@ import { SelectionService } from "../../../../Services/selection.service";
     styleUrl: "./select-toolbar.component.scss"
 })
 export class SelectToolbarComponent implements OnInit {
-    selected = new FormControl("month");
+    selected = new FormControl("day");
 
     @Output() selectionChange = new EventEmitter<string>();
 
@@ -41,8 +41,9 @@ export class SelectToolbarComponent implements OnInit {
 
     private initializeSelectedValue(): void {
         let storedValue = this.localStorageService.getStoredValue("selectedValue");
+
         if (!storedValue) {
-            storedValue = "month";
+            storedValue = "day";
             this.localStorageService.setStoredValue("selectedValue", storedValue);
         }
         this.selected.setValue(storedValue);
