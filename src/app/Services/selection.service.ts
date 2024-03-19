@@ -1,36 +1,37 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 
+import { SelectionValue } from "../utils/selected-direction";
 import { LocalStorageService } from "./local-storage.service";
 
 @Injectable({
     providedIn: "root"
 })
 export class SelectionService {
-    private selectedValueSubject: BehaviorSubject<string>;
-    selectedValue$: Observable<string>;
+    private selectedValueSubject: BehaviorSubject<SelectionValue>;
+    selectedValue$: Observable<SelectionValue>;
 
     constructor(private localStorageService: LocalStorageService) {
         this.initializeSelectedValue();
-        this.subscribeToSelectionChanges();
-    }
-
-    emitSelectionChange(value: string): void {
-        this.selectedValueSubject.next(value);
     }
 
     private initializeSelectedValue(): void {
-        const storedValue = this.localStorageService.getStoredValue("selectedValue") || "day";
+        let storedValue = this.localStorageService.getStoredValue("selectedValue") as SelectionValue;
 
-        this.selectedValueSubject = new BehaviorSubject<string>(storedValue === "schedule" ? "day" : storedValue);
+        if (!storedValue) {
+            storedValue = SelectionValue.Day;
+            this.localStorageService.setStoredValue("selectedValue", storedValue);
+        }
+        this.selectedValueSubject = new BehaviorSubject<SelectionValue>(storedValue);
         this.selectedValue$ = this.selectedValueSubject.asObservable();
     }
 
-    private subscribeToSelectionChanges(): void {
-        this.selectedValue$.subscribe((value: string) => {
-            if (value === "schedule" || this.selectedValueSubject.value === "schedule") {
-                this.selectedValueSubject.next("day");
-            }
-        });
+    getSelectedValue(): SelectionValue {
+        return this.selectedValueSubject.getValue();
+    }
+
+    setSelectedValue(value: SelectionValue): void {
+        this.selectedValueSubject.next(value);
+        this.localStorageService.setStoredValue("selectedValue", value);
     }
 }

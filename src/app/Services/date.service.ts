@@ -1,3 +1,4 @@
+import { DatePipe } from "@angular/common";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 
@@ -10,7 +11,10 @@ export class DateService {
     private currentValueSubject: BehaviorSubject<string>;
     currentDate$: Observable<string>;
 
-    constructor(private localStorageService: LocalStorageService) {
+    constructor(
+        private localStorageService: LocalStorageService,
+        private datePipe: DatePipe
+    ) {
         this.initializeCurrentValue();
     }
 
@@ -24,20 +28,20 @@ export class DateService {
         this.currentDate$ = this.currentValueSubject.asObservable();
     }
 
-    getFormat(format: string, date: string): string {
+    getFormat(format: string, dateString: string): string {
         let value: string;
 
         switch (format) {
             case "month":
             case "week":
             case "period":
-                value = this.formatDateToMonthYear(date);
+                value = this.formatDateToMonthYear(dateString);
                 break;
             case "year":
-                value = this.formatDateToYear(date);
+                value = this.formatDateToYear(dateString);
                 break;
             default:
-                value = this.formatDateToDayMonthYear(date);
+                value = this.formatDateToDayMonthYear(dateString);
                 break;
         }
 
@@ -45,31 +49,19 @@ export class DateService {
     }
 
     formatTodayDateToDayWeekDayMonth(): string {
-        const dateNow: Date = new Date();
-
-        return `${this.getDayOfWeekName(dateNow.getDay())}, ${dateNow.getDate()} ${this.getMonthName(dateNow.getMonth())}`;
+        return this.datePipe.transform(new Date(), "EEEE, d MMMM") ?? "";
     }
 
     formatDateToDayMonthYear(value: string): string {
-        const date = new Date(value);
-
-        return `${date.getDate()} ${this.getMonthName(date.getMonth())} ${date.getFullYear()}`;
+        return this.datePipe.transform(new Date(value), "d MMMM YYYY") ?? "";
     }
 
     formatDateToMonthYear(value: string): string {
-        const date = new Date(value);
-
-        return `${this.getMonthName(date.getMonth())} ${date.getFullYear()}`;
+        return this.datePipe.transform(new Date(value), "MMMM YYYY") ?? "";
     }
 
     formatDateToYear(value: string): string {
-        const date = new Date(value);
-
-        return `${date.getFullYear()}`;
-    }
-
-    updateFormatCurrentDate(selectedValue: string, currentDate: string): string {
-        return this.getFormat(selectedValue, currentDate);
+        return this.datePipe.transform(new Date(value), "YYYY") ?? "";
     }
 
     setCurrentDateToday(): string {
@@ -103,6 +95,32 @@ export class DateService {
         return formattedDate;
     }
 
+    nextDay(value: string): string {
+        const date = new Date(value);
+
+        date.setDate(date.getDate() + 1);
+
+        const currentDate = date.toString();
+
+        this.localStorageService.setStoredValue("currentDate", currentDate);
+        this.currentValueSubject.next(currentDate);
+
+        return this.formatDateToDayMonthYear(currentDate);
+    }
+
+    nextMonth(value: string): string {
+        const date = new Date(value);
+
+        date.setMonth(date.getMonth() + 1);
+
+        const currentDate = date.toString();
+
+        this.localStorageService.setStoredValue("currentDate", currentDate);
+        this.currentValueSubject.next(currentDate);
+
+        return this.formatDateToMonthYear(currentDate);
+    }
+
     nextYear(value: string): string {
         const date = new Date(value);
 
@@ -116,6 +134,32 @@ export class DateService {
         return this.formatDateToYear(currentDate);
     }
 
+    prevDay(value: string): string {
+        const date = new Date(value);
+
+        date.setDate(date.getDate() - 1);
+
+        const currentDate = date.toString();
+
+        this.localStorageService.setStoredValue("currentDate", currentDate);
+        this.currentValueSubject.next(currentDate);
+
+        return this.formatDateToDayMonthYear(currentDate);
+    }
+
+    prevMonth(value: string): string {
+        const date = new Date(value);
+
+        date.setMonth(date.getMonth() - 1);
+
+        const currentDate = date.toString();
+
+        this.localStorageService.setStoredValue("currentDate", currentDate);
+        this.currentValueSubject.next(currentDate);
+
+        return this.formatDateToMonthYear(currentDate);
+    }
+
     prevYear(value: string): string {
         const date = new Date(value);
 
@@ -127,38 +171,5 @@ export class DateService {
         this.currentValueSubject.next(currentDate);
 
         return this.formatDateToYear(currentDate);
-    }
-
-    private getMonthName(month: number): string {
-        const months: string[] = [
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December"
-        ];
-
-        return months[month];
-    }
-
-    private getDayOfWeekName(dayWeek: number): string {
-        const daysOfWeek: string[] = [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday"
-        ];
-
-        return daysOfWeek[dayWeek];
     }
 }

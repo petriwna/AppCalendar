@@ -5,6 +5,7 @@ import { MatIcon } from "@angular/material/icon";
 import { DateService } from "../../../../Services/date.service";
 import { LocalStorageService } from "../../../../Services/local-storage.service";
 import { SelectionService } from "../../../../Services/selection.service";
+import { SelectionValue } from "../../../../utils/selected-direction";
 import { SelectToolbarComponent } from "../../RightContainer/select-toolbar/select-toolbar.component";
 import { NavigationComponent } from "../navigation/navigation.component";
 
@@ -26,47 +27,35 @@ import { NavigationComponent } from "../navigation/navigation.component";
 export class CenterContainerToolbarComponent implements OnInit {
     today: string;
     currentDate: string;
-    selectedValue: string;
+    selectedValue: SelectionValue;
 
     constructor(
         private dateService: DateService,
         private localStorageService: LocalStorageService,
-        private selectionService: SelectionService
+        private selectionService: SelectionService,
     ) {}
 
     ngOnInit(): void {
         this.today = this.dateService.formatTodayDateToDayWeekDayMonth();
-        this.selectedValue = this.localStorageService.getStoredValue("selectedValue");
-        this.subscribeToSelectionChanges();
-        this.subscribeToCurrentDateChanges();
+        this.selectedValue = this.selectionService.getSelectedValue();
+        this.selectionService.selectedValue$.subscribe((value: SelectionValue) => {
+            this.selectedValue = value;
+        });
     }
 
     handleTodayButton(): void {
         switch (this.selectedValue) {
-            case "month":
-            case "week":
-            case "period":
+            case SelectionValue.Month:
+            case SelectionValue.Week:
+            case SelectionValue.Period:
                 this.currentDate = this.dateService.setCurrentMonthToday();
                 break;
-            case "year":
+            case SelectionValue.Year:
                 this.currentDate = this.dateService.setCurrentYearToday();
                 break;
             default:
                 this.currentDate = this.dateService.setCurrentDateToday();
                 break;
         }
-    }
-
-    private subscribeToSelectionChanges(): void {
-        this.selectionService.selectedValue$.subscribe((value: string) => {
-            this.selectedValue = value;
-            this.currentDate = this.dateService.updateFormatCurrentDate(value, this.currentDate);
-        });
-    }
-
-    private subscribeToCurrentDateChanges(): void {
-        this.dateService.currentDate$.subscribe((value: string) => {
-            this.currentDate = this.dateService.getFormat(this.selectedValue, value);
-        });
     }
 }

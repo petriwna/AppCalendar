@@ -5,6 +5,7 @@ import { MatIcon } from "@angular/material/icon";
 import { DateService } from "../../../../Services/date.service";
 import { LocalStorageService } from "../../../../Services/local-storage.service";
 import { SelectionService } from "../../../../Services/selection.service";
+import { SelectionValue } from "../../../../utils/selected-direction";
 
 @Component({
     selector: "app-navigation",
@@ -17,7 +18,7 @@ import { SelectionService } from "../../../../Services/selection.service";
     styleUrl: "./navigation.component.css"
 })
 export class NavigationComponent implements OnInit {
-    selectedValue: string;
+    selectedValue: SelectionValue;
     currentDate: string;
 
     constructor(
@@ -31,7 +32,7 @@ export class NavigationComponent implements OnInit {
         this.dateService.currentDate$.subscribe((value: string) => {
             this.currentDate = value;
         });
-        this.selectionService.selectedValue$.subscribe((value: string) => {
+        this.selectionService.selectedValue$.subscribe((value: SelectionValue) => {
             this.selectedValue = value;
         });
     }
@@ -40,16 +41,19 @@ export class NavigationComponent implements OnInit {
         let value: string;
 
         switch (this.selectedValue) {
-            case "month":
-            case "week":
-            case "period":
-                this.currentDate = this.dateService.setCurrentMonthToday();
+            case SelectionValue.Month:
+            case SelectionValue.Week:
+            case SelectionValue.Period:
+                value = this.dateService.nextMonth(this.currentDate);
+                this.currentDate = value;
                 break;
-            case "year":
+            case SelectionValue.Year:
                 value = this.dateService.nextYear(this.currentDate);
                 this.currentDate = value;
                 break;
             default:
+                value = this.dateService.nextDay(this.currentDate);
+                this.currentDate = value;
                 break;
         }
     }
@@ -58,17 +62,19 @@ export class NavigationComponent implements OnInit {
         let value: string;
 
         switch (this.selectedValue) {
-            case "month":
-            case "week":
-            case "period":
-                this.currentDate = this.dateService.setCurrentMonthToday();
+            case SelectionValue.Month:
+            case SelectionValue.Week:
+            case SelectionValue.Period:
+                value = this.dateService.prevMonth(this.currentDate);
+                this.currentDate = value;
                 break;
-            case "year":
+            case SelectionValue.Year:
                 value = this.dateService.prevYear(this.currentDate);
                 this.currentDate = value;
                 break;
             default:
-                this.currentDate = this.dateService.setCurrentDateToday();
+                value = this.dateService.prevDay(this.currentDate);
+                this.currentDate = value;
                 break;
         }
     }
