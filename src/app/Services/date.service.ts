@@ -1,175 +1,120 @@
 import { DatePipe } from "@angular/common";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
+import {
+    BehaviorSubject, Observable
+} from "rxjs";
 
+import { SelectionValue } from "../utils/selected-direction";
 import { LocalStorageService } from "./local-storage.service";
+import { SelectionService } from "./selection.service";
 
 @Injectable({
     providedIn: "root"
 })
 export class DateService {
-    private currentValueSubject: BehaviorSubject<string>;
-    currentDate$: Observable<string>;
+    private currentValueSubject: BehaviorSubject<Date>;
+    private formatDateWSubject: BehaviorSubject<string>;
+
+    currentDate$: Observable<Date>;
+    format: string;
+    formatDateW$: Observable<string>;
 
     constructor(
         private localStorageService: LocalStorageService,
+        private selectionService: SelectionService,
         private datePipe: DatePipe
     ) {
+        this.currentValueSubject = new BehaviorSubject<Date>(new Date());
+        this.currentDate$ = this.currentValueSubject.asObservable();
+        this.formatDateWSubject = new BehaviorSubject<string>("");
+        this.formatDateW$ = this.formatDateWSubject.asObservable();
+
         this.initializeCurrentValue();
+        this.subscribeToSelectionChanges();
     }
 
     private initializeCurrentValue(): void {
         const storedValueDate = this.localStorageService.getStoredValue("currentDate");
-        const storedValueSelected = this.localStorageService.getStoredValue("selectedValue");
+        const initialDate = storedValueDate ? new Date(storedValueDate) : new Date();
 
-        this.currentValueSubject = new BehaviorSubject<string>(
-            this.getFormat(storedValueSelected, storedValueDate) || this.setCurrentDateToday()
-        );
-        this.currentDate$ = this.currentValueSubject.asObservable();
+        this.setCurrentDate(initialDate);
     }
 
-    getFormat(format: string, dateString: string): string {
-        let value: string;
+    private subscribeToSelectionChanges(): void {
+        this.selectionService.selectedValue$.subscribe((value: SelectionValue) => {
+            this.updateFormat(value);
+        });
+    }
 
-        switch (format) {
-            case "month":
-            case "week":
-            case "period":
-                value = this.formatDateToMonthYear(dateString);
-                break;
-            case "year":
-                value = this.formatDateToYear(dateString);
-                break;
-            default:
-                value = this.formatDateToDayMonthYear(dateString);
-                break;
-        }
+    updateFormat(value: SelectionValue): void {
+        const formatMap: { [key in SelectionValue]: string } = {
+            day: "Day",
+            month: "Month",
+            week: "Month",
+            period: "Month",
+            year: "Year",
+            schedule: "Day"
+        };
 
-        return value || "";
+        this.format = formatMap[value] || "Day";
+        this.formatDate();
+    }
+
+    formatDate(): void {
+        this.currentDate$.subscribe((c) => {
+            switch (this.format) {
+                case "Month":
+                    this.formatDateWSubject.next(this.datePipe.transform(c, "MMMM YYYY") ?? "");
+                    break;
+                case "Year":
+                    this.formatDateWSubject.next(this.datePipe.transform(c, "YYYY") ?? "");
+                    break;
+                default:
+                    this.formatDateWSubject.next(this.datePipe.transform(c, "d MMMM YYYY") ?? "");
+                    break;
+            }
+        });
+    }
+
+    setCurrentDate(date: Date): void {
+        this.localStorageService.setStoredValue("currentDate", date.toISOString());
+        this.currentValueSubject.next(date);
+        this.formatDate();
     }
 
     formatTodayDateToDayWeekDayMonth(): string {
         return this.datePipe.transform(new Date(), "EEEE, d MMMM") ?? "";
     }
 
-    formatDateToDayMonthYear(value: string): string {
-        return this.datePipe.transform(new Date(value), "d MMMM YYYY") ?? "";
+    next(): void {
+        const currentDate = this.currentValueSubject.value;
+
+        switch (this.format) {
+            case "Month":
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                break;
+            case "Year":
+                currentDate.setFullYear(currentDate.getFullYear() + 1);
+                break;
+            default:
+                currentDate.setDate(currentDate.getDate() + 1);
+        }
+        this.setCurrentDate(currentDate);
     }
 
-    formatDateToMonthYear(value: string): string {
-        return this.datePipe.transform(new Date(value), "MMMM YYYY") ?? "";
-    }
+    prev(): void {
+        const currentDate = this.currentValueSubject.value;
 
-    formatDateToYear(value: string): string {
-        return this.datePipe.transform(new Date(value), "YYYY") ?? "";
-    }
-
-    setCurrentDateToday(): string {
-        const dateNow: string = (new Date()).toString();
-        const currentDateToday = this.formatDateToDayMonthYear(dateNow);
-
-        this.localStorageService.setStoredValue("currentDate", dateNow);
-        this.currentValueSubject.next(dateNow);
-
-        return currentDateToday;
-    }
-
-    setCurrentMonthToday(): string {
-        const dateNow: string = (new Date()).toString();
-        const currentMonthToday = this.formatDateToMonthYear(dateNow);
-
-        this.localStorageService.setStoredValue("currentDate", dateNow);
-
-        this.currentValueSubject.next(dateNow);
-
-        return currentMonthToday;
-    }
-
-    setCurrentYearToday(): string {
-        const currentDate = new Date();
-        const formattedDate = this.formatDateToYear(currentDate.toString());
-
-        this.localStorageService.setStoredValue("currentDate", currentDate.toString());
-        this.currentValueSubject.next(currentDate.toString());
-
-        return formattedDate;
-    }
-
-    nextDay(value: string): string {
-        const date = new Date(value);
-
-        date.setDate(date.getDate() + 1);
-
-        const currentDate = date.toString();
-
-        this.localStorageService.setStoredValue("currentDate", currentDate);
-        this.currentValueSubject.next(currentDate);
-
-        return this.formatDateToDayMonthYear(currentDate);
-    }
-
-    nextMonth(value: string): string {
-        const date = new Date(value);
-
-        date.setMonth(date.getMonth() + 1);
-
-        const currentDate = date.toString();
-
-        this.localStorageService.setStoredValue("currentDate", currentDate);
-        this.currentValueSubject.next(currentDate);
-
-        return this.formatDateToMonthYear(currentDate);
-    }
-
-    nextYear(value: string): string {
-        const date = new Date(value);
-
-        date.setFullYear(date.getFullYear() + 1);
-
-        const currentDate = date.toString();
-
-        this.localStorageService.setStoredValue("currentDate", currentDate);
-        this.currentValueSubject.next(currentDate);
-
-        return this.formatDateToYear(currentDate);
-    }
-
-    prevDay(value: string): string {
-        const date = new Date(value);
-
-        date.setDate(date.getDate() - 1);
-
-        const currentDate = date.toString();
-
-        this.localStorageService.setStoredValue("currentDate", currentDate);
-        this.currentValueSubject.next(currentDate);
-
-        return this.formatDateToDayMonthYear(currentDate);
-    }
-
-    prevMonth(value: string): string {
-        const date = new Date(value);
-
-        date.setMonth(date.getMonth() - 1);
-
-        const currentDate = date.toString();
-
-        this.localStorageService.setStoredValue("currentDate", currentDate);
-        this.currentValueSubject.next(currentDate);
-
-        return this.formatDateToMonthYear(currentDate);
-    }
-
-    prevYear(value: string): string {
-        const date = new Date(value);
-
-        date.setFullYear(date.getFullYear() - 1);
-
-        const currentDate = date.toString();
-
-        this.localStorageService.setStoredValue("currentDate", currentDate);
-        this.currentValueSubject.next(currentDate);
-
-        return this.formatDateToYear(currentDate);
+        switch (this.format) {
+            case "Month":
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                break;
+            case "Year":
+                currentDate.setFullYear(currentDate.getFullYear() - 1);
+                break;
+            default:
+                currentDate.setDate(currentDate.getDate() - 1);
+        }
+        this.setCurrentDate(currentDate);
     }
 }

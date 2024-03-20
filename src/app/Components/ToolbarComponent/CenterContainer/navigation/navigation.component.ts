@@ -2,9 +2,9 @@ import { Component, OnInit } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 
-import { DateService } from "../../../../Services/date.service";
-import { LocalStorageService } from "../../../../Services/local-storage.service";
+import { NavigationService } from "../../../../Services/navigation.service";
 import { SelectionService } from "../../../../Services/selection.service";
+import { NavigationDirection } from "../../../../utils/navigation-direction";
 import { SelectionValue } from "../../../../utils/selected-direction";
 
 @Component({
@@ -20,62 +20,21 @@ import { SelectionValue } from "../../../../utils/selected-direction";
 export class NavigationComponent implements OnInit {
     selectedValue: SelectionValue;
     currentDate: string;
+    navigationDirection = NavigationDirection;
 
     constructor(
-        private dateService: DateService,
-        private localStorageService: LocalStorageService,
-        private selectionService: SelectionService
+        private selectionService: SelectionService,
+        private navigationService: NavigationService
     ) {
     }
 
     ngOnInit(): void {
-        this.dateService.currentDate$.subscribe((value: string) => {
-            this.currentDate = value;
-        });
         this.selectionService.selectedValue$.subscribe((value: SelectionValue) => {
             this.selectedValue = value;
         });
     }
 
-    handleNextButton(): void {
-        let value: string;
-
-        switch (this.selectedValue) {
-            case SelectionValue.Month:
-            case SelectionValue.Week:
-            case SelectionValue.Period:
-                value = this.dateService.nextMonth(this.currentDate);
-                this.currentDate = value;
-                break;
-            case SelectionValue.Year:
-                value = this.dateService.nextYear(this.currentDate);
-                this.currentDate = value;
-                break;
-            default:
-                value = this.dateService.nextDay(this.currentDate);
-                this.currentDate = value;
-                break;
-        }
-    }
-
-    handlePrevButton(): void {
-        let value: string;
-
-        switch (this.selectedValue) {
-            case SelectionValue.Month:
-            case SelectionValue.Week:
-            case SelectionValue.Period:
-                value = this.dateService.prevMonth(this.currentDate);
-                this.currentDate = value;
-                break;
-            case SelectionValue.Year:
-                value = this.dateService.prevYear(this.currentDate);
-                this.currentDate = value;
-                break;
-            default:
-                value = this.dateService.prevDay(this.currentDate);
-                this.currentDate = value;
-                break;
-        }
+    handleNavigation(direction: NavigationDirection): void {
+        this.navigationService.navigate(direction);
     }
 }

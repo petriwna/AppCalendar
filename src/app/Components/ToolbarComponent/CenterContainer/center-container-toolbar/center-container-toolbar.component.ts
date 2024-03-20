@@ -1,12 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
+import { Subscription } from "rxjs";
 
 import { DateService } from "../../../../Services/date.service";
 import { LocalStorageService } from "../../../../Services/local-storage.service";
+import { NavigationService } from "../../../../Services/navigation.service";
 import { SelectionService } from "../../../../Services/selection.service";
-import { SelectionValue } from "../../../../utils/selected-direction";
-import { SelectToolbarComponent } from "../../RightContainer/select-toolbar/select-toolbar.component";
+import { NavigationDirection } from "../../../../utils/navigation-direction";
 import { NavigationComponent } from "../navigation/navigation.component";
 
 @Component({
@@ -18,44 +19,33 @@ import { NavigationComponent } from "../navigation/navigation.component";
         MatIconButton,
         NavigationComponent
     ],
-    providers: [
-        SelectToolbarComponent
-    ],
     templateUrl: "./center-container-toolbar.component.html",
     styleUrl: "./center-container-toolbar.component.css"
 })
 export class CenterContainerToolbarComponent implements OnInit {
+    private formatDateSubscription: Subscription;
+
     today: string;
     currentDate: string;
-    selectedValue: SelectionValue;
+    navigationDirection = NavigationDirection;
 
     constructor(
         private dateService: DateService,
         private localStorageService: LocalStorageService,
         private selectionService: SelectionService,
-    ) {}
+        private navigationService: NavigationService
+    ) {
+    }
 
     ngOnInit(): void {
         this.today = this.dateService.formatTodayDateToDayWeekDayMonth();
-        this.selectedValue = this.selectionService.getSelectedValue();
-        this.selectionService.selectedValue$.subscribe((value: SelectionValue) => {
-            this.selectedValue = value;
+
+        this.formatDateSubscription = this.dateService.formatDateW$.subscribe((formatDateW: string) => {
+            this.currentDate = formatDateW;
         });
     }
 
-    handleTodayButton(): void {
-        switch (this.selectedValue) {
-            case SelectionValue.Month:
-            case SelectionValue.Week:
-            case SelectionValue.Period:
-                this.currentDate = this.dateService.setCurrentMonthToday();
-                break;
-            case SelectionValue.Year:
-                this.currentDate = this.dateService.setCurrentYearToday();
-                break;
-            default:
-                this.currentDate = this.dateService.setCurrentDateToday();
-                break;
-        }
+    handleNavigation(direction: NavigationDirection) {
+        this.navigationService.navigate(direction);
     }
 }

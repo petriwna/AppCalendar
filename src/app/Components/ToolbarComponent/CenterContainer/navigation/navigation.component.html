@@ -1,6 +1,6 @@
-<button mat-icon-button title="Previous {{selectedValue}}" (click)="handlePrevButton()">
+<button mat-icon-button title="Previous {{selectedValue}}" (click)="handleNavigation(navigationDirection.PREV)">
   <mat-icon>navigate_before</mat-icon>
 </button>
-<button mat-icon-button title="Next {{selectedValue}}" (click)="handleNextButton()">
+<button mat-icon-button title="Next {{selectedValue}}" (click)="handleNavigation(navigationDirection.NEXT)">
   <mat-icon>navigate_next</mat-icon>
 </button>
