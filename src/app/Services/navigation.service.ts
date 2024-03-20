@@ -7,14 +7,12 @@ import { DateService } from "./date.service";
     providedIn: "root"
 })
 export class NavigationService {
-    todayDate: Date = new Date();
-
     constructor(private dateService: DateService) { }
 
     navigate(direction: NavigationDirection) {
         switch (direction) {
             case NavigationDirection.TODAY:
-                this.dateService.setCurrentDate(this.todayDate);
+                this.dateService.today();
                 break;
             case NavigationDirection.PREV:
                 this.dateService.prev();

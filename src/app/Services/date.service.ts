@@ -86,6 +86,10 @@ export class DateService {
         return this.datePipe.transform(new Date(), "EEEE, d MMMM") ?? "";
     }
 
+    today() {
+        this.setCurrentDate(new Date());
+    }
+
     next(): void {
         const currentDate = this.currentValueSubject.value;
 
