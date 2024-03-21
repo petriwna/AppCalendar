@@ -4,9 +4,7 @@ import { MatIcon } from "@angular/material/icon";
 import { Subscription } from "rxjs";
 
 import { DateService } from "../../../../Services/date.service";
-import { LocalStorageService } from "../../../../Services/local-storage.service";
 import { NavigationService } from "../../../../Services/navigation.service";
-import { SelectionService } from "../../../../Services/selection.service";
 import { NavigationDirection } from "../../../../utils/navigation-direction";
 import { NavigationComponent } from "../navigation/navigation.component";
 
@@ -31,11 +29,8 @@ export class CenterContainerToolbarComponent implements OnInit {
 
     constructor(
         private dateService: DateService,
-        private localStorageService: LocalStorageService,
-        private selectionService: SelectionService,
         private navigationService: NavigationService
-    ) {
-    }
+    ) {}
 
     ngOnInit(): void {
         this.today = this.dateService.formatTodayDateToDayWeekDayMonth();

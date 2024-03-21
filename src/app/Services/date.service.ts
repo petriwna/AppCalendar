@@ -61,24 +61,31 @@ export class DateService {
     }
 
     formatDate(): void {
-        this.currentDate$.subscribe((c) => {
+        this.currentDate$.subscribe((currentDate) => {
             switch (this.format) {
                 case "Month":
-                    this.formatDateWSubject.next(this.datePipe.transform(c, "MMMM YYYY") ?? "");
+                    this.formatDateWSubject.next(this.datePipe.transform(currentDate, "MMMM YYYY") ?? "");
                     break;
                 case "Year":
-                    this.formatDateWSubject.next(this.datePipe.transform(c, "YYYY") ?? "");
+                    this.formatDateWSubject.next(this.datePipe.transform(currentDate, "YYYY") ?? "");
                     break;
                 default:
-                    this.formatDateWSubject.next(this.datePipe.transform(c, "d MMMM YYYY") ?? "");
+                    this.formatDateWSubject.next(this.datePipe.transform(currentDate, "d MMMM YYYY") ?? "");
                     break;
             }
         });
     }
 
-    setCurrentDate(date: Date): void {
-        this.localStorageService.setStoredValue("currentDate", date.toISOString());
-        this.currentValueSubject.next(date);
+    setCurrentDate(date: Date | null): void {
+        let currentDate;
+
+        if (date instanceof Date) {
+            currentDate = date;
+        } else {
+            currentDate = new Date();
+        }
+        this.localStorageService.setStoredValue("currentDate", currentDate.toISOString());
+        this.currentValueSubject.next(currentDate);
         this.formatDate();
     }
 

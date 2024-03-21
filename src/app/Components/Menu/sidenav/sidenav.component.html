@@ -1,2 +1,7 @@
-<mat-calendar class="sidenav__calendar calendar"></mat-calendar>
+<mat-calendar class="sidenav__calendar calendar"
+              #calendar
+              [startAt]="activeDate"
+              [selected]="activeDate"
+              (selectedChange)="changeSelectedDate($event)"
+></mat-calendar>
 <app-search-people class="sidenav__search search"></app-search-people>

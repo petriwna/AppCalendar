@@ -21,7 +21,7 @@ export class NavigationService {
                 this.dateService.next();
                 break;
             default:
-                console.log("ddd");
+                console.log("s");
                 break;
         }
     }
