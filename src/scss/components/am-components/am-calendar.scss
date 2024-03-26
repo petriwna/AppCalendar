@@ -16,3 +16,12 @@
   font-size: 10px;
   color: rgb(60,64,67);
 }
+
+.mat-calendar-body-selected {
+  color: rgb(24, 90, 188) !important;
+  background-color: rgb(210, 227, 252) !important;
+}
+
+.mat-calendar-body-cell:hover .mat-calendar-body-cell-content.mat-focus-indicator{
+  background-color: rgb(241, 243, 244) !important;
+}

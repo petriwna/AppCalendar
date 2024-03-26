@@ -2,8 +2,33 @@
   <mat-drawer class="main__drawer" mode="side" [opened]="isDrawerOpen">
     <app-sidenav class="main__sidenav sidenav"></app-sidenav>
   </mat-drawer>
-  <div class="main__content">
-    <h3>hhhh</h3>
-  </div>
 
+  <div>
+    <app-day-view class="calendar"
+      *ngIf="getSelectedView(SelectionValue.Day)"
+     >
+    </app-day-view>
+    <app-week-view class="calendar"
+      *ngIf="getSelectedView(SelectionValue.Week)"
+    >
+    </app-week-view>
+    <app-month-view class="calendar"
+      *ngIf="getSelectedView(SelectionValue.Month)"
+    >
+    </app-month-view>
+    <app-year-view class="calendar"
+      *ngIf="getSelectedView(SelectionValue.Year)"
+    >
+    </app-year-view>
+    <app-schedule-view class="calendar"
+      *ngIf="getSelectedView(SelectionValue.Schedule)"
+    >
+    </app-schedule-view>
+    <app-period-view class="calendar"
+      *ngIf="getSelectedView(SelectionValue.Period)"
+    >
+    </app-period-view>
+  </div>
 </mat-drawer-container>
+
+

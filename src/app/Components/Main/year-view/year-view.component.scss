@@ -1,0 +1,58 @@
+.year {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: hidden;
+  outline: none;
+
+  &__container {
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #a2a2a2;
+      border-radius: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #6b6a6a;
+      border-radius: 6px;
+    }
+  }
+
+  &__month-container {
+    padding-right: 32px;
+    padding-top: 8px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    -webkit-align-content: flex-start;
+    align-content: flex-start;
+  }
+
+  &__month {
+    -webkit-flex-basis: 25%;
+    flex-basis: 25%;
+    min-width: 288px;
+    min-height: 252px;
+  }
+}

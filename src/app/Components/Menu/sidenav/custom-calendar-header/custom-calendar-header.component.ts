@@ -14,7 +14,6 @@ import { MatIcon } from "@angular/material/icon";
     styleUrl: "./custom-calendar-header.component.css"
 })
 export class CustomCalendarHeaderComponent extends MatCalendarHeader<Date> {
-
     get label() {
         return super.periodButtonText;
     }

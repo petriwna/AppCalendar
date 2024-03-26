@@ -1,0 +1,120 @@
+.month {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: hidden;
+  outline: none;
+
+  &__container {
+    border-left: rgb(218, 220, 224) 1px solid;
+    margin-left: 8px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__week-title {
+    margin: 0;
+    -webkit-box-align: stretch;
+    -webkit-align-items: stretch;
+    align-items: stretch;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-flex: 0;
+    -webkit-flex: none;
+    flex: none;
+    height: 20px;
+  }
+
+  &__day-week {
+    border-right: rgb(218, 220, 224) 1px solid;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 0;
+    flex: 1 1 0;
+    text-align: center;
+    text-transform: uppercase;
+    color: #70757a;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 20px;
+  }
+
+  &__month {
+    margin: 0;
+    overflow: hidden;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 0;
+    flex: 1 1 0;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+  }
+
+  &__week {
+    position: relative;
+    overflow: hidden;
+    border-bottom: rgb(218, 220, 224) 1px solid;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 0;
+    flex: 1 1 0;
+  }
+
+  &__line {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+
+    &--key {
+      border-right: rgb(218, 220, 224) 1px solid;
+      -webkit-box-flex: 1;
+      -webkit-flex: 1 1 0;
+      flex: 1 1 0;
+    }
+  }
+
+  &__day-number {
+    pointer-events: none;
+    z-index: 3;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+
+    &--number {
+      font-size: 14px;
+      line-height: 30px;
+      color: #70757a;
+      text-align: center;
+      background: transparent;
+      -webkit-box-flex: 1;
+      -webkit-flex: 1 1 0;
+      flex: 1 1 0;
+    }
+  }
+
+  &__event {
+    margin-top: 30px;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 0;
+    flex: 1 1 0;
+  }
+}

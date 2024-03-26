@@ -1,5 +1,6 @@
 import { AsyncPipe } from "@angular/common";
 import {
+    AfterViewInit,
     ChangeDetectionStrategy,
     Component, OnInit, ViewChild
 } from "@angular/core";
@@ -7,6 +8,7 @@ import { MatCard } from "@angular/material/card";
 import { MAT_DATE_FORMATS } from "@angular/material/core";
 import { MatCalendar } from "@angular/material/datepicker";
 import { MatMomentDateModule } from "@angular/material-moment-adapter";
+import { Observable } from "rxjs";
 
 import { DateService } from "../../../Services/date.service";
 import { SearchPeopleComponent } from "../search-people/search-people.component";
@@ -42,23 +44,36 @@ import { CustomCalendarHeaderComponent } from "./custom-calendar-header/custom-c
         },
     ],
 })
-export class SidenavComponent implements OnInit {
+export class SidenavComponent implements OnInit, AfterViewInit {
     @ViewChild("calendar") calendar: MatCalendar<Date>;
     customCalendarHeader = CustomCalendarHeaderComponent;
-    activeDate: Date;
+    selectedDate: Date;
+
+    currentDate$: Observable<Date>;
 
     constructor(
         private dateService: DateService
-    ) {}
+    ) {
+        this.currentDate$ = this.dateService.currentDate$;
+    }
 
     ngOnInit(): void {
-        this.dateService.currentDate$.subscribe((currentDate: Date) => {
-            this.activeDate = currentDate;
+        this.currentDate$.subscribe((currentDate: Date) => {
+            this.selectedDate = currentDate;
         });
     }
 
+    ngAfterViewInit(): void {
+        this.calendar.selectedChange.subscribe((value) => {
+            this.dateService.setCurrentDate(value);
+        });
+
+        // this.calendar.activeDate = this.selectedDate;
+        // this.calendar.selected = this.selectedDate;
+    }
+
     changeSelectedDate(newDate: Date): void {
-        this.activeDate = newDate;
+        this.selectedDate = newDate;
         this.dateService.setCurrentDate(new Date(newDate));
     }
 }
