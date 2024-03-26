@@ -1,5 +1,6 @@
 <mat-calendar class="sidenav__calendar calendar"
               #calendar
+              [headerComponent]="customCalendarHeader"
               [startAt]="activeDate"
               [selected]="activeDate"
               (selectedChange)="changeSelectedDate($event)"

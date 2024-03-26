@@ -1,13 +1,16 @@
+import { AsyncPipe } from "@angular/common";
 import {
+    ChangeDetectionStrategy,
     Component, OnInit, ViewChild
 } from "@angular/core";
 import { MatCard } from "@angular/material/card";
+import { MAT_DATE_FORMATS } from "@angular/material/core";
 import { MatCalendar } from "@angular/material/datepicker";
 import { MatMomentDateModule } from "@angular/material-moment-adapter";
-import moment from "moment";
 
 import { DateService } from "../../../Services/date.service";
 import { SearchPeopleComponent } from "../search-people/search-people.component";
+import { CustomCalendarHeaderComponent } from "./custom-calendar-header/custom-calendar-header.component";
 
 @Component({
     selector: "app-sidenav",
@@ -16,15 +19,33 @@ import { SearchPeopleComponent } from "../search-people/search-people.component"
         MatCard,
         MatCalendar,
         MatMomentDateModule,
-        SearchPeopleComponent
+        SearchPeopleComponent,
+        AsyncPipe
     ],
     templateUrl: "./sidenav.component.html",
-    styleUrl: "./sidenav.component.scss"
+    styleUrl: "./sidenav.component.scss",
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: MAT_DATE_FORMATS,
+            useValue: {
+                parse: {
+                    dateInput: ["l", "LL"],
+                },
+                display: {
+                    dateInput: "YYYY",
+                    monthYearLabel: "MMMM YYYY",
+                    dateA11yLabel: "LL",
+                    monthYearA11yLabel: "MMMM YYYY",
+                },
+            },
+        },
+    ],
 })
 export class SidenavComponent implements OnInit {
-    @ViewChild(MatCalendar) calendar: MatCalendar<Date>;
-
-    activeDate: MatMomentDateModule;
+    @ViewChild("calendar") calendar: MatCalendar<Date>;
+    customCalendarHeader = CustomCalendarHeaderComponent;
+    activeDate: Date;
 
     constructor(
         private dateService: DateService
@@ -32,7 +53,7 @@ export class SidenavComponent implements OnInit {
 
     ngOnInit(): void {
         this.dateService.currentDate$.subscribe((currentDate: Date) => {
-            this.activeDate = moment(currentDate);
+            this.activeDate = currentDate;
         });
     }
 
