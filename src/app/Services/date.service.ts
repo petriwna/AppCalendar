@@ -1,36 +1,23 @@
-import { DatePipe } from "@angular/common";
 import { Injectable } from "@angular/core";
 import {
     BehaviorSubject, Observable
 } from "rxjs";
 
-import { SelectionValue } from "../utils/selected-direction";
 import { LocalStorageService } from "./local-storage.service";
-import { SelectionService } from "./selection.service";
 
 @Injectable({
     providedIn: "root"
 })
 export class DateService {
     private currentValueSubject: BehaviorSubject<Date>;
-    private formatDateWSubject: BehaviorSubject<string>;
-
     currentDate$: Observable<Date>;
-    format: string;
-    formatDateW$: Observable<string>;
 
     constructor(
         private localStorageService: LocalStorageService,
-        private selectionService: SelectionService,
-        private datePipe: DatePipe
     ) {
         this.currentValueSubject = new BehaviorSubject<Date>(new Date());
         this.currentDate$ = this.currentValueSubject.asObservable();
-        this.formatDateWSubject = new BehaviorSubject<string>("");
-        this.formatDateW$ = this.formatDateWSubject.asObservable();
-
         this.initializeCurrentValue();
-        this.subscribeToSelectionChanges();
     }
 
     private initializeCurrentValue(): void {
@@ -38,42 +25,6 @@ export class DateService {
         const initialDate = storedValueDate ? new Date(storedValueDate) : new Date();
 
         this.setCurrentDate(initialDate);
-    }
-
-    private subscribeToSelectionChanges(): void {
-        this.selectionService.selectedValue$.subscribe((value: SelectionValue) => {
-            this.updateFormat(value);
-        });
-    }
-
-    updateFormat(value: SelectionValue): void {
-        const formatMap: { [key in SelectionValue]: string } = {
-            day: "Day",
-            month: "Month",
-            week: "Month",
-            period: "Month",
-            year: "Year",
-            schedule: "Day"
-        };
-
-        this.format = formatMap[value] || "Day";
-        this.formatDate();
-    }
-
-    formatDate(): void {
-        this.currentDate$.subscribe((currentDate) => {
-            switch (this.format) {
-                case "Month":
-                    this.formatDateWSubject.next(this.datePipe.transform(currentDate, "MMMM YYYY") ?? "");
-                    break;
-                case "Year":
-                    this.formatDateWSubject.next(this.datePipe.transform(currentDate, "YYYY") ?? "");
-                    break;
-                default:
-                    this.formatDateWSubject.next(this.datePipe.transform(currentDate, "d MMMM YYYY") ?? "");
-                    break;
-            }
-        });
     }
 
     setCurrentDate(date: Date | null): void {
@@ -86,23 +37,21 @@ export class DateService {
         }
         this.localStorageService.setStoredValue("currentDate", currentDate.toISOString());
         this.currentValueSubject.next(currentDate);
-        this.formatDate();
-    }
-
-    formatTodayDateToDayWeekDayMonth(): string {
-        return this.datePipe.transform(new Date(), "EEEE, d MMMM") ?? "";
     }
 
     today() {
         this.setCurrentDate(new Date());
     }
 
-    next(): void {
-        const currentDate = this.currentValueSubject.value;
+    next(format: string): void {
+        const currentDate: Date = this.currentValueSubject.value;
 
-        switch (this.format) {
+        switch (format) {
             case "Month":
                 currentDate.setMonth(currentDate.getMonth() + 1);
+                break;
+            case "Week":
+                currentDate.setDate(currentDate.getDate() + 7);
                 break;
             case "Year":
                 currentDate.setFullYear(currentDate.getFullYear() + 1);
@@ -113,12 +62,15 @@ export class DateService {
         this.setCurrentDate(currentDate);
     }
 
-    prev(): void {
-        const currentDate = this.currentValueSubject.value;
+    prev(format: string): void {
+        const currentDate: Date = this.currentValueSubject.value;
 
-        switch (this.format) {
+        switch (format) {
             case "Month":
                 currentDate.setMonth(currentDate.getMonth() - 1);
+                break;
+            case "Week":
+                currentDate.setDate(currentDate.getDate() - 7);
                 break;
             case "Year":
                 currentDate.setFullYear(currentDate.getFullYear() - 1);
@@ -127,5 +79,40 @@ export class DateService {
                 currentDate.setDate(currentDate.getDate() - 1);
         }
         this.setCurrentDate(currentDate);
+    }
+
+    getWeekDates(date: Date): Date[] {
+        const firstDayOfWeek = new Date(date);
+
+        firstDayOfWeek.setDate(firstDayOfWeek.getDate() - firstDayOfWeek.getDay());
+
+        const lastDayOfWeek = new Date(firstDayOfWeek);
+
+        lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+
+        const weekDates: Date[] = [];
+
+        for (let currentDate = new Date(firstDayOfWeek); currentDate <= lastDayOfWeek; currentDate.setDate(currentDate.getDate() + 1)) {
+            weekDates.push(new Date(currentDate));
+        }
+
+        return weekDates;
+    }
+
+    getWeeksInMonth(date: Date): Date[][] {
+        const currentMonth: number = date.getMonth();
+        const year: number = date.getFullYear();
+        const month: { week: Date[][] } = { week: [] };
+        let firstDate: number = new Date(year, currentMonth, 1).getDate();
+        const lastDate: number = new Date(year, currentMonth + 1, 0).getDate();
+
+        for (let i: number = 0; i < Math.ceil(lastDate / 7); i++) {
+            date.setDate(firstDate);
+            month.week.push(this.getWeekDates(date));
+
+            firstDate += 7;
+        }
+
+        return month.week;
     }
 }

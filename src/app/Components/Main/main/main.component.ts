@@ -1,5 +1,5 @@
 import { NgIf } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import {
     MatCalendar,
     MatCalendarHeader
@@ -7,7 +7,9 @@ import {
 import { MatIcon } from "@angular/material/icon";
 import { MatDrawerContainer, MatSidenavModule } from "@angular/material/sidenav";
 import { BehaviorSubject, Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
+import { DateService } from "../../../Services/date.service";
 import { DrawerService } from "../../../Services/drawer.service";
 import { SelectionService } from "../../../Services/selection.service";
 import { SelectionValue } from "../../../utils/selected-direction";
@@ -42,26 +44,40 @@ import { YearViewComponent } from "../year-view/year-view.component";
 })
 export class MainComponent implements OnInit {
     protected readonly SelectionValue = SelectionValue;
+    private viewSubject: BehaviorSubject<SelectionValue>;
+    viewW$: Observable<SelectionValue>;
+    view: SelectionValue = this.selectionService.getSelectedValue();
 
     isDrawerOpen: boolean = false;
-    private viewSubject: BehaviorSubject<SelectionValue>;
 
-    viewW$: Observable<SelectionValue>;
+    selectedDateSubject: BehaviorSubject<Date> = new BehaviorSubject<Date>(new Date());
+    selected$: Observable<Date>;
 
-    selectedDates: Date[] = [];
-    view: SelectionValue = this.selectionService.getSelectedValue();
+    @Input()
+    set selectedDate(selectedDate: Date) {
+        this.selectedDateSubject.next(selectedDate);
+    }
+    get selectedDate(): Date {
+        return this.selectedDateSubject.getValue();
+    }
 
     constructor(
         private drawerService: DrawerService,
         private selectionService: SelectionService,
+        private dateService: DateService
     ) {
         this.viewSubject = new BehaviorSubject<SelectionValue>(this.selectionService.getSelectedValue());
         this.viewW$ = this.viewSubject.asObservable();
+        this.selected$ = this.selectedDateSubject.pipe(map((date: Date) => date));
     }
 
     ngOnInit() {
         this.drawerService.getDrawerState().subscribe((state) => {
             this.isDrawerOpen = state;
+        });
+
+        this.dateService.currentDate$.subscribe((s) => {
+            this.selectedDate = s;
         });
 
         this.selectionService.selectedValue$.subscribe((s: SelectionValue) => {

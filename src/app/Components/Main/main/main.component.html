@@ -5,27 +5,30 @@
 
   <div>
     <app-day-view class="calendar"
-      *ngIf="getSelectedView(SelectionValue.Day)"
-     >
+                  *ngIf="getSelectedView(SelectionValue.Day)"
+                  [selected$]="selected$"
+    >
     </app-day-view>
     <app-week-view class="calendar"
-      *ngIf="getSelectedView(SelectionValue.Week)"
+                   *ngIf="getSelectedView(SelectionValue.Week)"
+                   [selected$]="selected$"
     >
     </app-week-view>
     <app-month-view class="calendar"
-      *ngIf="getSelectedView(SelectionValue.Month)"
+                    *ngIf="getSelectedView(SelectionValue.Month)"
+                    [selected$]="selected$"
     >
     </app-month-view>
     <app-year-view class="calendar"
-      *ngIf="getSelectedView(SelectionValue.Year)"
+                   *ngIf="getSelectedView(SelectionValue.Year)"
     >
     </app-year-view>
     <app-schedule-view class="calendar"
-      *ngIf="getSelectedView(SelectionValue.Schedule)"
+                       *ngIf="getSelectedView(SelectionValue.Schedule)"
     >
     </app-schedule-view>
     <app-period-view class="calendar"
-      *ngIf="getSelectedView(SelectionValue.Period)"
+                     *ngIf="getSelectedView(SelectionValue.Period)"
     >
     </app-period-view>
   </div>

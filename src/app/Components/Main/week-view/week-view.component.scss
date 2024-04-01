@@ -7,6 +7,7 @@
     display: flex;
     height: 84px;
     width: 100%;
+    padding-right: 16px;
   }
 
   &__time {
@@ -24,7 +25,6 @@
     display: flex;
     flex: 1 1 auto;
     border-bottom: rgb(218, 220, 224) 1px solid;
-    margin-right: 16px;
   }
 
   &__step {
@@ -33,6 +33,7 @@
     height: 100%;
     min-width: 9px;
   }
+
   &__day {
     display: flex;
     flex-direction: column;

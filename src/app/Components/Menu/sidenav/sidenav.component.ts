@@ -67,9 +67,6 @@ export class SidenavComponent implements OnInit, AfterViewInit {
         this.calendar.selectedChange.subscribe((value) => {
             this.dateService.setCurrentDate(value);
         });
-
-        // this.calendar.activeDate = this.selectedDate;
-        // this.calendar.selected = this.selectedDate;
     }
 
     changeSelectedDate(newDate: Date): void {

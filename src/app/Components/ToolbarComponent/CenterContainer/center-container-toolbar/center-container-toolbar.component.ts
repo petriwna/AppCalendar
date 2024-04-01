@@ -3,7 +3,7 @@ import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { Subscription } from "rxjs";
 
-import { DateService } from "../../../../Services/date.service";
+import { FormattingService } from "../../../../Services/formatting.service";
 import { NavigationService } from "../../../../Services/navigation.service";
 import { NavigationDirection } from "../../../../utils/navigation-direction";
 import { NavigationComponent } from "../navigation/navigation.component";
@@ -18,7 +18,7 @@ import { NavigationComponent } from "../navigation/navigation.component";
         NavigationComponent
     ],
     templateUrl: "./center-container-toolbar.component.html",
-    styleUrl: "./center-container-toolbar.component.css"
+    styleUrl: "./center-container-toolbar.component.scss"
 })
 export class CenterContainerToolbarComponent implements OnInit {
     private formatDateSubscription: Subscription;
@@ -28,15 +28,15 @@ export class CenterContainerToolbarComponent implements OnInit {
     navigationDirection = NavigationDirection;
 
     constructor(
-        private dateService: DateService,
+        private formattingService: FormattingService,
         private navigationService: NavigationService
     ) {}
 
     ngOnInit(): void {
-        this.today = this.dateService.formatTodayDateToDayWeekDayMonth();
+        this.today = this.formattingService.formatTodayDateToDayWeekDayMonth();
 
-        this.formatDateSubscription = this.dateService.formatDateW$.subscribe((formatDateW: string) => {
-            this.currentDate = formatDateW;
+        this.formatDateSubscription = this.formattingService.formatDate$.subscribe((formatDate: string) => {
+            this.currentDate = formatDate;
         });
     }
 
